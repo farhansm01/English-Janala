@@ -65,7 +65,7 @@ const displayLevelWord = words => {
                 </div>
                 <div class="flex justify-between items-center">
                     <button
-                    onclick="my_modal_5.showModal()"
+                    onclick="loadWordDetails(${word.id})"
                     class="bg-[#1A91FF10] px-4 py-3 rounded-lg hover:bg-[#1A91FF50] transition-colors duration-300"
                     >
                     <i class="fa-solid fa-circle-info"></i>
@@ -80,6 +80,43 @@ const displayLevelWord = words => {
         `;
         wordContainer.appendChild(card);
     })
+}
+
+
+const loadWordDetails = async id => {
+    const url = `https://openapi.programming-hero.com/api/word/${id}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    displayWordDetails(data.data);
+}
+
+const displayWordDetails = (word) => {
+    console.log(word);
+    detailsContainer = document.getElementById("details-container");
+    detailsContainer.innerHTML = `
+        <div>
+            <h2 class="text-2xl font-bold">
+            ${word.word} (<i class="fa-solid fa-microphone-lines"></i>:${word.pronunciation})
+            </h2>
+        </div>
+        <div class="space-y-3">
+            <h3 class="text-xl font-semibold">Meaning</h3>
+            <p class="text-xl font-medium font-bangla">${word.meaning}</p>
+        </div>
+        <div class="space-y-3">
+            <h3 class="text-xl font-semibold">Example</h3>
+            <p class="text-xl">${word.example || 'Example not available'}</p>
+        </div>
+        <div class="space-y-3">
+            <p class="text-xl font-semibold">সমার্থক শব্দ গুলো</p>
+            <div class="space-x-3">
+            <button class="btn bg-[#EDF7FF]">Enthusiastic</button>
+            <button class="btn bg-[#EDF7FF]">excited</button>
+            <button class="btn bg-[#EDF7FF]">keen</button>
+            </div>
+        </div>
+    `;
+    document.getElementById("wordModal").showModal();
 }
 
 
