@@ -11,10 +11,69 @@ const displayLesson = (lessons) => {
 
     for(const lesson of lessons){
         const btnDiv = document.createElement("div");
-        btnDiv.innerHTML = `<button class="btn btn-outline btn-primary"><i class="fa-solid fa-book-open"></i>Lesson - ${lesson.level_no}</button>`
+        btnDiv.innerHTML = `<button onclick="loadLevelWord(${lesson.level_no})" class="btn btn-outline btn-primary"><i class="fa-solid fa-book-open"></i>Lesson - ${lesson.level_no}</button>`
         levelContainer.appendChild(btnDiv);
     }
 }
 
+const loadLevelWord = id => {
+    const url = `https://openapi.programming-hero.com/api/level/${id}`;
+    fetch(url)
+    .then(res => res.json())
+    .then(data => displayLevelWord(data.data))
+
+}
+
+const displayLevelWord = words => {
+    const wordContainer = document.getElementById("word-container");
+    wordContainer.innerHTML = "";
+
+    if(words.length === 0){
+        wordContainer.innerHTML = `
+        <div class="col-span-full text-center space-y-4">
+            <img class="mx-auto" src="./assets/alert-error.png" alt="No Vocabulary Found" />
+            <p class="font-bangla text-[#79716B]">
+                এই Lesson এ এখনো কোন Vocabulary যুক্ত করা হয়নি।
+            </p>
+            <h2 class="text-[#292524] text-3xl font-semibold">
+                নেক্সট Lesson এ যান
+            </h2>
+        </div>
+        `;
+
+        return;
+    }
+
+    words.forEach(word => {
+        const card = document.createElement("div");
+        card.innerHTML = `
+            <div class="bg-white rounded-xl shadow-sm text-center p-14 space-y-6">
+                <h2 class="text-2xl font-bold">${word.word ? word.word : 'শব্দ পাওয়া যায়নি'}</h2>
+                <p class="text-lg">Meaning/Pronunciation</p>
+                <div class="font-bangla text-2xl text-[#18181B] font-semibold">
+                    "${word.meaning ? word.meaning : 'অর্থ পাওয়া যায়নি'} / ${word.pronunciation ? word.pronunciation : 'pronunciation পাওয়া যায়নি'}"
+                </div>
+                <div class="flex justify-between items-center">
+                    <button
+                    class="bg-[#1A91FF10] px-4 py-3 rounded-lg hover:bg-[#1A91FF50] transition-colors duration-300"
+                    >
+                    <i class="fa-solid fa-circle-info"></i>
+                    </button>
+                    <button
+                    class="bg-[#1A91FF10] px-4 py-3 rounded-lg hover:bg-[#1A91FF50] transition-colors duration-300"
+                    >
+                    <i class="fa-solid fa-volume-high"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        wordContainer.appendChild(card);
+    })
+}
+
 
 loadLessons();
+
+
+
+
