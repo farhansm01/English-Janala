@@ -22,6 +22,7 @@ const removeActive = () => {
 }
 
 const loadLevelWord = id => {
+    manageSpinner(true);
     const url = `https://openapi.programming-hero.com/api/level/${id}`;
     fetch(url)
     .then(res => res.json())
@@ -50,7 +51,7 @@ const displayLevelWord = words => {
             </h2>
         </div>
         `;
-
+        manageSpinner(false);
         return;
     }
 
@@ -80,6 +81,7 @@ const displayLevelWord = words => {
         `;
         wordContainer.appendChild(card);
     })
+    manageSpinner(false);
 }
 
 
@@ -105,18 +107,32 @@ const displayWordDetails = (word) => {
         </div>
         <div class="space-y-3">
             <h3 class="text-xl font-semibold">Example</h3>
-            <p class="text-xl">${word.example || 'Example not available'}</p>
+            <p class="text-xl">${word.sentence || 'Example not available'}</p>
         </div>
         <div class="space-y-3">
             <p class="text-xl font-semibold">সমার্থক শব্দ গুলো</p>
             <div class="space-x-3">
-            <button class="btn bg-[#EDF7FF]">Enthusiastic</button>
-            <button class="btn bg-[#EDF7FF]">excited</button>
-            <button class="btn bg-[#EDF7FF]">keen</button>
+                ${createElement(word.synonyms)}
             </div>
         </div>
     `;
     document.getElementById("wordModal").showModal();
+}
+
+const createElement = (arr) => {
+    if(arr.length === 0){ return ""}
+    const elements = arr.map(element => `<span class="btn bg-[#EDF7FF]">${element}</span>`).join(" ");
+    return elements; 
+}
+
+const manageSpinner = (status) => {
+    if(status){
+        document.getElementById("spinner").classList.remove("hidden");
+        document.getElementById("word-container").classList.add("hidden");
+    }else{
+        document.getElementById("spinner").classList.add("hidden");
+        document.getElementById("word-container").classList.remove("hidden");
+    }
 }
 
 
