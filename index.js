@@ -11,16 +11,26 @@ const displayLesson = (lessons) => {
 
     for(const lesson of lessons){
         const btnDiv = document.createElement("div");
-        btnDiv.innerHTML = `<button onclick="loadLevelWord(${lesson.level_no})" class="btn btn-outline btn-primary"><i class="fa-solid fa-book-open"></i>Lesson - ${lesson.level_no}</button>`
+        btnDiv.innerHTML = `<button id="level-btn-${lesson.level_no}" onclick="loadLevelWord(${lesson.level_no})" class="btn btn-outline btn-primary lesson-btn"><i class="fa-solid fa-book-open"></i>Lesson - ${lesson.level_no}</button>`
         levelContainer.appendChild(btnDiv);
     }
+}
+
+const removeActive = () => {
+    const allBtn = document.querySelectorAll(".lesson-btn");
+    allBtn.forEach(btn => btn.classList.remove("active"));
 }
 
 const loadLevelWord = id => {
     const url = `https://openapi.programming-hero.com/api/level/${id}`;
     fetch(url)
     .then(res => res.json())
-    .then(data => displayLevelWord(data.data))
+    .then(data => {
+        removeActive();
+        const clickBtn = document.getElementById(`level-btn-${id}`);
+        clickBtn.classList.add("active");
+        displayLevelWord(data.data)
+    })
 
 }
 
@@ -55,6 +65,7 @@ const displayLevelWord = words => {
                 </div>
                 <div class="flex justify-between items-center">
                     <button
+                    onclick="my_modal_5.showModal()"
                     class="bg-[#1A91FF10] px-4 py-3 rounded-lg hover:bg-[#1A91FF50] transition-colors duration-300"
                     >
                     <i class="fa-solid fa-circle-info"></i>
